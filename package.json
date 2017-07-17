@@ -1,0 +1,30 @@
+{
+  "name": "appetizer-bundle",
+  "version": "0.0.0",
+  "description": "Create/Bundle React-Native apps to on appetize.io",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "cd test/fixture && npm install . && cd ../../",
+    "lint": "eslint-godaddy index.js test/unit.test.js",
+    "test": "mocha test/unit.test.js"
+  },
+  "keywords": [
+    "appetizer",
+    "appetize.io",
+    "appetize",
+    "bundle"
+  ],
+  "author": "GoDaddy Operating Company, LLC",
+  "license": "MIT",
+  "dependencies": {
+    "diagnostics": "^1.1.0"
+  },
+  "devDependencies": {
+    "assume": "^1.5.1",
+    "eslint": "^4.1.1",
+    "eslint-config-godaddy": "^1.1.0",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-mocha": "^4.11.0",
+    "mocha": "^3.4.2"
+  }
+}
