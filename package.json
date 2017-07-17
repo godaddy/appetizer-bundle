@@ -1,6 +1,6 @@
 {
   "name": "appetizer-bundle",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Create/Bundle React-Native apps to on appetize.io",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,14 @@
     "lint": "eslint-godaddy index.js test/unit.test.js",
     "test": "mocha test/unit.test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godaddy/appetizer-bundle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/godaddy/appetizer-bundle/issues"
+  },
+  "homepage": "https://github.com/godaddy/appetizer-bundle#readme",
   "keywords": [
     "appetizer",
     "appetize.io",
