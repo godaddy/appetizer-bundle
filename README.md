@@ -164,4 +164,4 @@ bundle.xcodebuild(function (err) {
 
 ## License
 
-MIT
+[MIT](LICENSE)
