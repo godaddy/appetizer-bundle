@@ -14,6 +14,19 @@ system. As it needs to have access to the following CLI's:
 npm install --save appetizer-bundle
 ```
 
+## Part of the Appetizer suite
+
+This module is part of a larger suite of components that work excellent with each
+other. If you liked this module we highly suggest checking out:
+
+- [appetizer][api] A Node.js component for interacting with the Appetize.io API.
+- [appetizer-bundle][bundle] Prepares and packs your React-Native application for uploading to Appetize.io.
+- [appetizer-component][component] A React Component to embed your uploaded application.
+
+[api]: https://github.com/godaddy/appetizer
+[bundle]: https://github.com/godaddy/appetizer-bundle
+[component]: https://github.com/godaddy/appetizer-component
+
 ## API
 
 The following arguments are required in the `Bundle` constructor:
