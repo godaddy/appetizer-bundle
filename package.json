@@ -25,14 +25,14 @@
   "author": "GoDaddy Operating Company, LLC",
   "license": "MIT",
   "dependencies": {
-    "diagnostics": "^1.1.0"
+    "diagnostics": "^2.0.2"
   },
   "devDependencies": {
-    "assume": "^1.5.1",
-    "eslint": "^4.1.1",
-    "eslint-config-godaddy": "^1.1.0",
+    "assume": "^2.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-godaddy": "^3.0.0",
     "eslint-plugin-json": "^1.2.0",
-    "eslint-plugin-mocha": "^4.11.0",
-    "mocha": "^3.4.2"
+    "eslint-plugin-mocha": "^5.3.0",
+    "mocha": "^6.1.4"
   }
 }
