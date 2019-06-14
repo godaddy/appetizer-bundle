@@ -1,5 +1,7 @@
 # appetizer-bundle
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/godaddy/appetizer-bundle.svg)](https://greenkeeper.io/)
+
 Creates an uploadable bundle of your React-Native application so it can run on
 the appetize.io platform. It currently only supports `ios` builds. Please note
 that this module assumes you have a iOS build tool chain installed on your
