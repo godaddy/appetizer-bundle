@@ -91,19 +91,21 @@ class Bundle {
       // Update the code location to the new bundle location.
       //
       const changes = data.split('\n').map((line) => {
-        if (!~line.indexOf('jsBundleURLForBundleRoot:@"index.')) return line;
-
         //
         // React-Native is always actively iterated upon, that means that the
         // code structure of this file is also iterated upon. We want to support
         // as many versions as possible so we need to drill down further here to
         // ensure that we return the correct new bundle location.
         //
-        if (!!~line.indexOf('jsCodeLocation')) {
+
+
+        if (!!~line.indexOf('jsBundleURLForBundleRoot:@"index.')) {
           return '  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];';
+        } else if (!!~line.indexOf('jsBundleURLForBundleRoot:@"index"')) {
+          return '  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];'
         }
 
-        return '  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];'
+        return line;
       }).join('\n');
 
       debug('updated the AppDelegate to ', changes);
@@ -188,8 +190,6 @@ class Bundle {
 
     this.xcodeproj(dir, (err, project) => {
       if (err) return next(err);
-
-      console.log(project);
 
       this.spawns('xcodebuild', [
         project.workspace ? '-workspace' : '-project', project.file,
