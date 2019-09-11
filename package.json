@@ -1,6 +1,6 @@
 {
   "name": "appetizer-bundle",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Create/Bundle React-Native apps to on appetize.io",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   "author": "GoDaddy Operating Company, LLC",
   "license": "MIT",
   "dependencies": {
-    "diagnostics": "^1.1.0"
+    "diagnostics": "^2.0.2"
   },
   "devDependencies": {
     "assume": "^1.5.1",
