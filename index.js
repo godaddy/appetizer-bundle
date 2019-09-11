@@ -37,6 +37,14 @@ class Bundle {
   offline(dir, next) {
     debug('creating an offline bundle in %s', dir);
 
+    let entry = 'index.js';
+
+    if (fs.existsSync(path.join(this.dir, 'index.ios.js'))) {
+      entry = 'index.ios.js';
+    } else if (fs.existsSync(path.join(this.dir, 'index.native.js'))) {
+      entry = 'index.native.js';
+    }
+
     this.spawns('react-native', [
       'bundle',
       '--platform',
@@ -44,7 +52,7 @@ class Bundle {
       '--dev',
       'false',
       '--entry-file',
-      'index.ios.js',
+      entry,
       '--bundle-output',
       dir + '/main.jsbundle',
       '--assets-dest',
@@ -88,9 +96,21 @@ class Bundle {
       // Update the code location to the new bundle location.
       //
       const changes = data.split('\n').map((line) => {
-        if (!~line.indexOf('jsBundleURLForBundleRoot:@"index.')) return line;
+        //
+        // React-Native is always actively iterated upon, that means that the
+        // code structure of this file is also iterated upon. We want to support
+        // as many versions as possible so we need to drill down further here to
+        // ensure that we return the correct new bundle location.
+        //
 
-        return '  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];';
+
+        if (!!~line.indexOf('jsBundleURLForBundleRoot:@"index.')) {
+          return '  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];';
+        } else if (!!~line.indexOf('jsBundleURLForBundleRoot:@"index"')) {
+          return '  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];'
+        }
+
+        return line;
       }).join('\n');
 
       debug('updated the AppDelegate to ', changes);
@@ -138,24 +158,33 @@ class Bundle {
     fs.readdir(dir, function readdir(err, files) {
       if (err) return next(err);
 
+      /**
+       * Search the resolved files for files with a given extension.
+       *
+       * @param {String} target Extension we're looking for
+       * @returns {String|Boolean} Name of the file, or false.
+       * @private
+       */
+      function search(target) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const ext = path.extname(file);
+
+          if (ext === target) return file;
+        }
+
+        return false;
+      }
+
+      const workspace = search('.xcworkspace');
+      const project = search('.xcodeproj');
       let result;
-      files.sort().some(function find(file) {
-        const ext = path.extname(file);
 
-        if (ext === '.xcworkspace') result = {
-          file: file,
-          name: name,
-          workspace: true
-        };
-
-        if (ext === '.xcodeproj') result = {
-          file: file,
-          name: name,
-          workspace: false
-        };
-
-        return !!result;
-      });
+      if (workspace) {
+        result = { file: workspace, name, workspace: true };
+      } else if (project) {
+        result = { file: project, name, workspace: false };
+      }
 
       if (result) return next(err, result);
       next(new Error('Unable to locate xcode project files.'));
@@ -179,7 +208,7 @@ class Bundle {
         '-sdk', 'iphonesimulator',
         '-configuration', 'Debug',
         '-scheme', project.name,
-        '-derivedDataPath', 'build'
+        '-derivedDataPath', `build/${project.name}`
       ], {
         cwd: dir,
 
