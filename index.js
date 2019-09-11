@@ -208,7 +208,7 @@ class Bundle {
         '-sdk', 'iphonesimulator',
         '-configuration', 'Debug',
         '-scheme', project.name,
-        '-derivedDataPath', `build/${project.name}`
+        '-derivedDataPath', 'build'
       ], {
         cwd: dir,
 
