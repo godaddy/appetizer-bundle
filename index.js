@@ -90,7 +90,17 @@ class Bundle {
       const changes = data.split('\n').map((line) => {
         if (!~line.indexOf('jsBundleURLForBundleRoot:@"index.')) return line;
 
-        return '  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];';
+        //
+        // React-Native is always actively iterated upon, that means that the
+        // code structure of this file is also iterated upon. We want to support
+        // as many versions as possible so we need to drill down further here to
+        // ensure that we return the correct new bundle location.
+        //
+        if (!!~line.indexOf('jsCodeLocation')) {
+          return '  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];';
+        }
+
+        return '  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];'
       }).join('\n');
 
       debug('updated the AppDelegate to ', changes);
