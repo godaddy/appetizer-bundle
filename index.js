@@ -37,6 +37,9 @@ class Bundle {
   offline(dir, next) {
     debug('creating an offline bundle in %s', dir);
 
+    const platform = fs.existsSync(path.join(dir, 'index.ios.js'));
+    const entry = platform ? 'index.ios.js' : 'index.js';
+
     this.spawns('react-native', [
       'bundle',
       '--platform',
@@ -44,7 +47,7 @@ class Bundle {
       '--dev',
       'false',
       '--entry-file',
-      'index.ios.js',
+      entry,
       '--bundle-output',
       dir + '/main.jsbundle',
       '--assets-dest',
@@ -148,24 +151,26 @@ class Bundle {
     fs.readdir(dir, function readdir(err, files) {
       if (err) return next(err);
 
+      function search(target) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const ext = path.extname(file);
+
+          if (ext === target) return file;
+        }
+
+        return false;
+      }
+
+      const workspace = search('.xcworkspace');
+      const project = search('.xcodeprojx');
       let result;
-      files.sort().some(function find(file) {
-        const ext = path.extname(file);
 
-        if (ext === '.xcworkspace') result = {
-          file: file,
-          name: name,
-          workspace: true
-        };
-
-        if (ext === '.xcodeproj') result = {
-          file: file,
-          name: name,
-          workspace: false
-        };
-
-        return !!result;
-      });
+      if (workspace) {
+        result = { file: workspace, name, workspace: true };
+      } else if (project) {
+        result = { file: project, name, workspace: false };
+      }
 
       if (result) return next(err, result);
       next(new Error('Unable to locate xcode project files.'));
@@ -184,12 +189,14 @@ class Bundle {
     this.xcodeproj(dir, (err, project) => {
       if (err) return next(err);
 
+      console.log(project);
+
       this.spawns('xcodebuild', [
         project.workspace ? '-workspace' : '-project', project.file,
         '-sdk', 'iphonesimulator',
         '-configuration', 'Debug',
         '-scheme', project.name,
-        '-derivedDataPath', 'build'
+        '-derivedDataPath', `build/${project.name}`
       ], {
         cwd: dir,
 
