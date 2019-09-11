@@ -37,8 +37,13 @@ class Bundle {
   offline(dir, next) {
     debug('creating an offline bundle in %s', dir);
 
-    const platform = fs.existsSync(path.join(dir, 'index.ios.js'));
-    const entry = platform ? 'index.ios.js' : 'index.js';
+    let entry = 'index.js';
+
+    if (fs.existsSync(path.join(this.dir, 'index.ios.js'))) {
+      entry = 'index.ios.js';
+    } else if (fs.existsSync(path.join(this.dir, 'index.native.js'))) {
+      entry = 'index.native.js';
+    }
 
     this.spawns('react-native', [
       'bundle',
@@ -153,6 +158,13 @@ class Bundle {
     fs.readdir(dir, function readdir(err, files) {
       if (err) return next(err);
 
+      /**
+       * Search the resolved files for files with a given extension.
+       *
+       * @param {String} target Extension we're looking for
+       * @returns {String|Boolean} Name of the file, or false.
+       * @private
+       */
       function search(target) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
@@ -165,7 +177,7 @@ class Bundle {
       }
 
       const workspace = search('.xcworkspace');
-      const project = search('.xcodeprojx');
+      const project = search('.xcodeproj');
       let result;
 
       if (workspace) {
