@@ -1,6 +1,6 @@
 {
   "name": "appetizer-bundle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create/Bundle React-Native apps to on appetize.io",
   "main": "index.js",
   "scripts": {
